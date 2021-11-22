@@ -9,83 +9,90 @@
 class Homework6 {
 
     public static void main(String[] args) {
-        Cat cat = new Cat("Ash", 300, 0);
-
-        Dog dog = new Dog("Pirat", 200, 5);
+        Cat cat = new Cat(200);
+        Dog dog = new Dog(500, 10);
 
         IAnimal[] animals = {cat, dog};
         for (IAnimal animal : animals) {
-            animal.swim();
-            animal.run();
-            System.out.println();
+            System.out.println(animal);
+            System.out.println(animal.run(150));
+            System.out.println(animal.run(250));
+            System.out.println(animal.run(550));
+            System.out.println(animal.swim(5));
+            System.out.println(animal.swim(15));
         }
-    }
-}
-
-interface IAnimal {
-    void swim();
-    void run();
-}
-
-abstract class Animal implements IAnimal {
-    protected String name;
-    protected int run;
-    protected int swim;
-
-    Animal(String name, int run, int swim) {
-        this.name = name;
-        this.run = run;
-        this.swim = swim;
+        System.out.println("Animals were created: " + Animal.getCountofAnimals());
     }
 
-    @Override
-    public String toString() {
-        return name + " ," + run + " ," + swim;
+}
+
+class Dog extends Animal {
+    Dog(int runLimit, int swimLimit) {
+        super(runLimit, swimLimit);
     }
 }
 
 class Cat extends Animal {
-    static int runMax = 200;
-    static int swimMax = 0;
-
-    Cat(String name, int run, int swim) {
-        super(name, run, swim);
+    Cat(int runLimit, int swimLimit) {
+        super(runLimit, swimLimit);
     }
-
-    public void swim() {
-        System.out.println(name + " can't swim");
+    Cat(int runLimit) {
+        super(runLimit, -1);
     }
-
-    public void run() {
-        if (run < runMax && run >= 0) {
-            System.out.println(name + " running " + run + " m");
-        } else {
-            System.out.println(name + " can't running " + run + " the distance has " + runMax + " meters");
-        }
+    @Override
+    public String swim(int distance) {
+        return getClassName() + " can't swim";
     }
 }
 
-class Dog extends Animal {
-    static int runMax = 500;
-    static int swimMax = 10;
+abstract class Animal implements IAnimal {
+    private int runLimit;
+    private int swimLimit;
+    private String className;
+    private static int countofAnimals = 0;
 
-    Dog(String name, int run, int swim) {
-        super(name, run, swim);
+    Animal(int runLimit, int swimLimit) {
+        this.runLimit = runLimit;
+        this.swimLimit = swimLimit;
+        className = getClass().getSimpleName();
+        countofAnimals++;
     }
 
-    public void swim() {
-        if (swim < swimMax && swim >= 0) {
-            System.out.println(name + " swims " + swim + " m");
+    public String getClassName() {
+        return className;
+    }
+
+    public static int getCountofAnimals() {
+        return countofAnimals;
+    }
+
+    @Override
+    public String run(int distance) {
+        if(distance > runLimit) {
+            return className + "couldn't run" + distance;
         } else {
-            System.out.println(name + " can't sims " + swim + " the distance has  " + swimMax + " meters");
+            return className + " successfully run " + distance;
         }
     }
 
-    public void run() {
-        if (run < runMax && run >= 0) {
-            System.out.println(name + " running " + run + " m");
+    @Override
+    public String swim(int distance) {
+        if(distance > swimLimit) {
+            return className + "couldn't swim" + distance;
         } else {
-            System.out.println(name + " can't running " + run + " the distance has " + runMax + " meters");
+            return className + "successfully swim" + distance;
         }
+    }
+
+    @Override
+    public String toString() {
+        return className + " runLimit: " + runLimit + ", swimLimit:" + swimLimit;
     }
 }
+
+interface IAnimal {
+    String run(int distance);
+    String swim(int distance);
+}
+
+
